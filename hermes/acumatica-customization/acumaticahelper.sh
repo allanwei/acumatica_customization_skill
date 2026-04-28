@@ -368,22 +368,28 @@ cmd_import() {
 
     _login || return 1
 
-    echo "Reading $project_zip..."
-    local b64
-    b64=$(base64 < "$project_zip" | tr -d '\n')
+    # Use temp files for base64 content and JSON payload to avoid ARG_MAX
+    # limits when importing large ZIP files (passing multi-MB strings as shell
+    # arguments fails with "Argument list too long").
+    local b64_file payload_file
+    b64_file=$(mktemp /tmp/acumatica_b64.XXXXXX)
+    payload_file=$(mktemp /tmp/acumatica_payload.XXXXXX)
 
-    local payload
-    payload=$(jq -n \
+    echo "Reading $project_zip..."
+    base64 < "$project_zip" | tr -d '\n' > "$b64_file"
+
+    jq -n \
         --arg name    "$project_name" \
         --arg desc    "$project_desc" \
-        --arg content "$b64" \
+        --rawfile content "$b64_file" \
         '{
             projectName:          $name,
             projectDescription:   $desc,
             projectLevel:         1,
             isReplaceIfExists:    true,
-            projectContentBase64: $content
-        }')
+            projectContentBase64: ($content | rtrimstr("\n"))
+        }' > "$payload_file"
+    rm -f "$b64_file"
 
     echo "Importing '$project_name'..."
 
@@ -393,8 +399,9 @@ cmd_import() {
         -X POST \
         -H "Content-Type: application/json" \
         -H "Accept: application/json" \
-        -d "$payload" \
+        --data "@$payload_file" \
         "${ACUMATICA_URL}/CustomizationApi/import")
+    rm -f "$payload_file"
 
     _require_json "$response" "import" > /dev/null || return 1
     _print_log "$response"
