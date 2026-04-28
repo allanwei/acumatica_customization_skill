@@ -1,0 +1,16 @@
+{
+  "name": "acumatica-customization",
+  "version": "1.0.0",
+  "description": "Manage Acumatica ERP customization projects via the CustomizationApi web API.",
+  "author": {
+    "name": "awei"
+  },
+  "license": "MIT",
+  "keywords": [
+    "acumatica",
+    "erp",
+    "customization",
+    "publish",
+    "deploy"
+  ]
+}

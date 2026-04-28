@@ -1,0 +1,3 @@
+# Local Acumatica credentials — never commit
+acumatica.conf
+**/acumatica.conf

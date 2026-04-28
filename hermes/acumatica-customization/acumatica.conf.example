@@ -1,0 +1,23 @@
+# Example configuration for Acumatica Customization Helper
+# Copy this file to acumatica.conf (same directory as acumaticahelper.sh) and fill in your values.
+# Use bare KEY=VALUE lines — do NOT prefix with 'export'.
+
+# Base URL of your Acumatica instance, no trailing slash
+ACUMATICA_URL=https://your-company.acumatica.com
+
+# Username for API access — must have the Customizer role
+ACUMATICA_USERNAME=your_username
+
+# Password for API access
+ACUMATICA_PASSWORD=your_password
+
+# Default output directory for the export command (defaults to current directory if unset)
+# EXPORT_PATH=/path/to/exports
+
+# Directory containing release ZIPs for the release command
+# The release command looks for <project-name>.zip in this directory
+# RELEASE_PATH=/path/to/releases
+
+# Optional tuning
+# PUBLISH_POLL_INTERVAL=30
+# PUBLISH_MAX_ATTEMPTS=10
